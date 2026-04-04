@@ -16,7 +16,7 @@ pip install ET-eds-api
 ### Prices
 
 ```python
-from eds import get_wp_h, wagg_wp
+from ET_eds_api import get_wp_h, wagg_wp
 
 # Hourly consumption-weighted price + gross consumption
 wp_h, q_h = get_wp_h(start=2023, end=2025)
@@ -28,7 +28,7 @@ wp_d, wp_w, wp_m, wp_y = wagg_wp(start=2023, end=2025)
 ### Volume-equivalent production
 
 ```python
-from eds import VE, columns
+from ET_eds_api import VE, columns
 
 # See available column options
 columns()
