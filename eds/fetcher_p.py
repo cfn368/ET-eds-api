@@ -43,17 +43,19 @@ def get_wp_h(
     r = requests.get(BASE, params=params, timeout=60)
     r.raise_for_status()
     p_h_ = pd.DataFrame(r.json().get("records", []))
-    p_h_["TimeUTC"] = pd.to_datetime(p_h_["TimeUTC"])
 
-    # 3. get hour and take hourly average
-    p_h_["hour"] = p_h_["TimeUTC"].dt.to_period("h").dt.to_timestamp(how="start")
-
-    p_h_hourly = (
-        p_h_.groupby(["hour", "PriceArea"])["DayAheadPriceDKK"]
-        .mean()
-        .reset_index()
-        .rename(columns={"hour": "HourUTC", "DayAheadPriceDKK": "SpotPriceDKK"})
-    )
+    # 3. get hour and take hourly average (DayAheadPrices may be empty for older ranges)
+    if not p_h_.empty:
+        p_h_["TimeUTC"] = pd.to_datetime(p_h_["TimeUTC"])
+        p_h_["hour"] = p_h_["TimeUTC"].dt.to_period("h").dt.to_timestamp(how="start")
+        p_h_hourly = (
+            p_h_.groupby(["hour", "PriceArea"])["DayAheadPriceDKK"]
+            .mean()
+            .reset_index()
+            .rename(columns={"hour": "HourUTC", "DayAheadPriceDKK": "SpotPriceDKK"})
+        )
+    else:
+        p_h_hourly = pd.DataFrame(columns=["HourUTC", "PriceArea", "SpotPriceDKK"])
 
     # 4. stack with the older data
     p_combined = pd.concat([
