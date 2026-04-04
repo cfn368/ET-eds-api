@@ -1,0 +1,53 @@
+# ET-eds-api
+
+Python client for the [Energi Data Service](https://www.energidataservice.dk/) API, focused on two things:
+
+- **Spot prices** — consumption-weighted hourly prices for Denmark, stitched across the `Elspotprices` and `DayAheadPrices` datasets
+- **Volume-equivalent production** — renewable production deflated by installed capacity, isolating the weather signal from capacity growth
+
+## Install
+
+```bash
+pip install ET-eds-api
+```
+
+## Usage
+
+### Prices
+
+```python
+from eds import get_wp_h, wagg_wp
+
+# Hourly consumption-weighted price + gross consumption
+wp_h, q_h = get_wp_h(start=2023, end=2025)
+
+# Aggregated to daily / weekly / monthly / yearly
+wp_d, wp_w, wp_m, wp_y = wagg_wp(start=2023, end=2025)
+```
+
+### Volume-equivalent production
+
+```python
+from eds import VE, columns
+
+# See available column options
+columns()
+
+# Capacity-deflated solar production
+solar_ve = VE(
+    value_columns = ["SolarPowerLt10kW_MWh", "SolarPowerGe10Lt40kW_MWh", "SolarPowerGe40kW_MWh"],
+    cap_column    = ["SolarPowerCapacity"],
+    col_name      = "solar_VE",
+    start         = 2022,
+    end           = 2025,
+)
+```
+
+## Data sources
+
+| Dataset | Used for |
+|---|---|
+| [Elspotprices](https://www.energidataservice.dk/tso-electricity/Elspotprices) | Spot prices up to ~2025-09-30 |
+| [DayAheadPrices](https://www.energidataservice.dk/tso-electricity/DayAheadPrices) | Spot prices from ~2025-10-01 |
+| [ProductionConsumptionSettlement](https://www.energidataservice.dk/tso-electricity/ProductionConsumptionSettlement) | Consumption weights + production |
+| [CapacityPerMunicipality](https://www.energidataservice.dk/tso-electricity/CapacityPerMunicipality) | Installed capacity index |

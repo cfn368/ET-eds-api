@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ET-eds-api"
+version = "0.1.0"
+description = "Python client for the Energi Data Service API"
+requires-python = ">=3.9"
+dependencies = ["requests", "pandas"]
