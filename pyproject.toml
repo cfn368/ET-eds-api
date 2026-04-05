@@ -6,6 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "ET-eds-api"
 version = "0.1.5"
 description = "Python client for the Energi Data Service API"
+license = {text = "MIT"}
+authors = [{name = "Linus Lindquist"}]
+keywords = ["energy", "denmark", "electricity", "Energi Data Service"]
 requires-python = ">=3.9"
 dependencies = ["requests", "pandas", "pyarrow"]
 
