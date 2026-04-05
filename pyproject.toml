@@ -9,5 +9,8 @@ description = "Python client for the Energi Data Service API"
 requires-python = ">=3.9"
 dependencies = ["requests", "pandas", "pyarrow"]
 
+[tool.setuptools.packages.find]
+include = ["ET_eds_api*"]
+
 [project.urls]
 "Source Code" = "https://github.com/cfn368/ET-eds-api"
