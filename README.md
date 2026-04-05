@@ -56,7 +56,7 @@ solar_ve_1gw = VE(
 
 ## Breaking changes
 
-**0.1.4** — `get_wp_h` now returns three values instead of two. Update any existing unpacking:
+**0.1.5** — `get_wp_h` now returns three values instead of two. Update any existing unpacking:
 
 ```python
 # before
