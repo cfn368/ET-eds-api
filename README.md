@@ -54,6 +54,18 @@ solar_ve_1gw = VE(
 )
 ```
 
+## Breaking changes
+
+**0.1.4** — `get_wp_h` now returns three values instead of two. Update any existing unpacking:
+
+```python
+# before
+wp_h, q_h = get_wp_h(...)
+
+# after
+wp_h, q_h, p_area = get_wp_h(...)
+```
+
 ## Data sources
 
 | Dataset | Used for |
