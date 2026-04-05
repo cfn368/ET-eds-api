@@ -74,3 +74,8 @@ wp_h, q_h, p_area = get_wp_h(...)
 | [DayAheadPrices](https://www.energidataservice.dk/tso-electricity/DayAheadPrices) | Spot prices from ~2025-10-01 |
 | [ProductionConsumptionSettlement](https://www.energidataservice.dk/tso-electricity/ProductionConsumptionSettlement) | Consumption weights + production |
 | [CapacityPerMunicipality](https://www.energidataservice.dk/tso-electricity/CapacityPerMunicipality) | Installed capacity index |
+
+
+---
+
+Developed by [Linus Lindquist](https://github.com/cfn368) for [Erhvervslivets Tænketank](https://www.e-tank.dk) as part of Kernekraftprojektet.
