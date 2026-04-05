@@ -30,7 +30,7 @@ def columns():
 
 # ==================== ==================== ==================== ====================
 # 1. build VE VP
-def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False):
+def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False, cap_ref=None):
 
     # 1. get variation ====================
     # 1.1 get
@@ -96,15 +96,16 @@ def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=F
         .reset_index()
     )
 
-    # 2.4 build index, based on last observation
-    indx_m[f'{col_name}_idx'] = indx_m[cap_col] / indx_m.iloc[-1][cap_col]
+    # 2.4 build index — denominator is cap_ref if provided, else last observed capacity
+    denominator = cap_ref if cap_ref is not None else indx_m.iloc[-1][cap_col]
+    indx_m[f'{col_name}_idx'] = indx_m[cap_col] / denominator
 
     if no_index:
         indx_m[f'{col_name}_idx'] = 1
 
     if verbose:
         print(f'\nIndex denominator is: ===================\n')
-        print(indx_m.iloc[-1])
+        print(f'  {cap_col}: {denominator}{"  (counterfactual)" if cap_ref is not None else "  (last observed)"}')
 
     # 3. merge and deflate
     df_ve = df_val.merge(indx_m[[f'{col_name}_idx','month']], on='month', how='left')
