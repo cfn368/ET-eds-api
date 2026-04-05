@@ -18,11 +18,15 @@ pip install ET-eds-api
 ```python
 from ET_eds_api import get_wp_h, wagg_wp
 
-# Hourly consumption-weighted price + gross consumption
-wp_h, q_h = get_wp_h(start=2023, end=2025)
+# Hourly consumption-weighted price, gross consumption, and per-area prices
+wp_h, q_h, p_area = get_wp_h(start=2023, end=2025)
+# p_area has columns: HourUTC | DK1 | DK2
 
 # Aggregated to daily / weekly / monthly / yearly
 wp_d, wp_w, wp_m, wp_y = wagg_wp(start=2023, end=2025)
+
+# Cache responses to eds_cache/ — subsequent calls load from disk
+wp_h, q_h, p_area = get_wp_h(start=2023, end=2025, cache=True)
 ```
 
 ### Volume-equivalent production
@@ -40,6 +44,13 @@ solar_ve = VE(
     col_name      = "solar_VE",
     start         = 2022,
     end           = 2025,
+    cache         = True,
+)
+
+# Counterfactual — normalise to a fixed capacity (e.g. 1 GW)
+solar_ve_1gw = VE(
+    ...,
+    cap_ref = 1_000,
 )
 ```
 
