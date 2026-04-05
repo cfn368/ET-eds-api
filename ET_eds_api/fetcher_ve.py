@@ -1,19 +1,17 @@
-import json
 import pandas as pd
-import requests
+from ._cache import fetch
 
 # ==================== ==================== ==================== ====================
 # 0. helper — show available value_columns and cap_column options
 def columns():
-    prod_url = "https://api.energidataservice.dk/dataset/ProductionConsumptionSettlement"
-    cap_url  = "https://api.energidataservice.dk/dataset/CapacityPerMunicipality"
-
-    prod_cols = pd.DataFrame(
-        requests.get(prod_url, params={"limit": 1}, timeout=60).json().get("records", [])
+    prod_cols = fetch(
+        "https://api.energidataservice.dk/dataset/ProductionConsumptionSettlement",
+        {"limit": 1},
     ).columns.tolist()
 
-    cap_cols = pd.DataFrame(
-        requests.get(cap_url, params={"limit": 1}, timeout=60).json().get("records", [])
+    cap_cols = fetch(
+        "https://api.energidataservice.dk/dataset/CapacityPerMunicipality",
+        {"limit": 1},
     ).columns.tolist()
 
     value_options = [c for c in prod_cols if c.endswith("_MWh")]
@@ -30,7 +28,7 @@ def columns():
 
 # ==================== ==================== ==================== ====================
 # 1. build VE VP
-def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False, cap_ref=None):
+def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False, cap_ref=None, cache=False, cache_dir="eds_cache"):
 
     # 1. get variation ====================
     # 1.1 get
@@ -45,9 +43,7 @@ def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=F
         "limit":    0,
     }
 
-    r = requests.get(base, params=params, timeout=60)
-    r.raise_for_status()
-    df = pd.DataFrame(r.json().get("records", []))
+    df = fetch(base, params, cache=cache, cache_dir=cache_dir)
 
     # 1.2 subtract leap year
     df["HourUTC"] = pd.to_datetime(df["HourUTC"])
@@ -75,9 +71,7 @@ def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=F
         "limit":    0,
     }
 
-    r = requests.get(base, params=params, timeout=60)
-    r.raise_for_status()
-    df_ind = pd.DataFrame(r.json().get("records", []))
+    df_ind = fetch(base, params, cache=cache, cache_dir=cache_dir)
 
     dt = pd.to_datetime(df_ind["Month"], errors="coerce")
     df_ind["month"] = (
