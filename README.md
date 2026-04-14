@@ -27,6 +27,9 @@ wp_d, wp_w, wp_m, wp_y = wagg_wp(start=2023, end=2025)
 
 # Cache responses to eds_cache/ — subsequent calls load from disk
 wp_h, q_h, p_area = get_wp_h(start=2023, end=2025, cache=True)
+
+# Save an EnergyPLAN-ready txt file to variation_patterns/wp_2023_2025.txt
+wp_h, q_h, p_area = get_wp_h(start=2023, end=2025, save_txt=True)
 ```
 
 ### Volume-equivalent production
@@ -52,7 +55,12 @@ solar_ve_1gw = VE(
     ...,
     cap_ref = 1_000,
 )
+
+# Save an EnergyPLAN-ready txt file to variation_patterns/solar_VE_2022_2025.txt
+solar_ve = VE(..., save_txt=True)
 ```
+
+The txt files use comma as decimal separator and two decimal places (`435,24`), matching the EnergyPLAN input format.
 
 ## Breaking changes
 

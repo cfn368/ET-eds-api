@@ -1,16 +1,17 @@
 import json
 import pandas as pd
-from ._cache import fetch
+from ._cache import fetch, write_ep_txt
 
 
 # ==================== ==================== ==================== ====================
 # 1. Get weighted price h
 def get_wp_h(
-        start   = int,
-        end     = int,
-        EA      = ["DK1","DK2"],
-        cache   = False,
+        start     = int,
+        end       = int,
+        EA        = ["DK1","DK2"],
+        cache     = False,
         cache_dir = "eds_cache",
+        save_txt  = False,
 ):
     ea_json = json.dumps(EA)  # ["DK1","DK2"] -> '["DK1","DK2"]'
 
@@ -109,6 +110,12 @@ def get_wp_h(
         .sum()
         .reset_index()
     )
+
+    if save_txt:
+        write_ep_txt(
+            wp_h["SpotPriceDKK_weighted"],
+            f"wp_{start}_{end}.txt",
+        )
 
     return wp_h, q_h, p_area
 

@@ -1,5 +1,5 @@
 import pandas as pd
-from ._cache import fetch
+from ._cache import fetch, write_ep_txt
 
 # ==================== ==================== ==================== ====================
 # 0. helper — show available value_columns and cap_column options
@@ -28,7 +28,7 @@ def columns():
 
 # ==================== ==================== ==================== ====================
 # 1. build VE VP
-def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False, cap_ref=None, cache=False, cache_dir="eds_cache"):
+def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=False, cap_ref=None, cache=False, cache_dir="eds_cache", save_txt=False):
 
     # 1. get variation ====================
     # 1.1 get
@@ -104,5 +104,11 @@ def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=F
     # 3. merge and deflate
     df_ve = df_val.merge(indx_m[[f'{col_name}_idx','month']], on='month', how='left')
     df_ve[col_name] = df_ve.value / df_ve[f'{col_name}_idx']
+
+    if save_txt:
+        write_ep_txt(
+            df_ve[col_name],
+            f"{col_name}_{start}_{end}.txt",
+        )
 
     return df_ve
