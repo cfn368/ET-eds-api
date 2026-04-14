@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ET-eds-api"
-version = "0.1.8"
+version = "0.1.9"
 description = "Python client for the Energi Data Service API"
 license = {text = "MIT"}
 authors = [{name = "Linus Lindquist"}]

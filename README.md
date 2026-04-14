@@ -60,7 +60,14 @@ solar_ve_1gw = VE(
 solar_ve = VE(..., save_txt=True)
 ```
 
-The txt files use comma as decimal separator and two decimal places (`435,24`), matching the EnergyPLAN input format.
+### EnergyPLAN variation pattern files
+
+Pass `save_txt=True` to either function to write a variation pattern file directly to `variation_patterns/`. The files are formatted to match EnergyPLAN's input requirements:
+
+- **Length** — always 8784 rows (365 × 24 h, then the first day repeated once)
+- **Leap years** — Feb 29 is dropped before averaging, so the output is always a standard 365-day year
+- **Multiple years** — if the query spans more than one year, hours are averaged across years per calendar slot (month × day × hour). For prices, the average is weighted by `GrossConsumptionMWh`; for VE series, it is a simple mean
+- **Format** — comma decimal separator, two decimal places (e.g. `435,24`)
 
 ## Breaking changes
 

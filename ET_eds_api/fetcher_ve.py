@@ -107,8 +107,9 @@ def VE(value_columns, cap_column, col_name, start, end, verbose=True, no_index=F
 
     if save_txt:
         write_ep_txt(
-            df_ve[col_name],
-            f"{col_name}_{start}_{end}.txt",
+            values     = df_ve[col_name],
+            timestamps = df_ve["HourUTC"],
+            filename   = f"{col_name}_{start}_{end}.txt",
         )
 
     return df_ve

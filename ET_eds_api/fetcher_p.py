@@ -113,8 +113,10 @@ def get_wp_h(
 
     if save_txt:
         write_ep_txt(
-            wp_h["SpotPriceDKK_weighted"],
-            f"wp_{start}_{end}.txt",
+            values     = wp_h["SpotPriceDKK_weighted"],
+            timestamps = wp_h["HourUTC"],
+            filename   = f"wp_{start}_{end}.txt",
+            weights    = q_h["GrossConsumptionMWh"],
         )
 
     return wp_h, q_h, p_area
