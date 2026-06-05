@@ -12,6 +12,7 @@ def get_wp_h(
         cache     = False,
         cache_dir = "eds_cache",
         save_txt  = False,
+        EP_style  = True,
 ):
     ea_json = json.dumps(EA)  # ["DK1","DK2"] -> '["DK1","DK2"]'
 
@@ -117,6 +118,7 @@ def get_wp_h(
             timestamps = wp_h["HourUTC"],
             filename   = f"wp_{start}_{end}.txt",
             weights    = q_h["GrossConsumptionMWh"],
+            EP_style   = EP_style,
         )
 
     return wp_h, q_h, p_area

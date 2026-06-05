@@ -1,5 +1,6 @@
 import hashlib
 import os
+import time
 import pandas as pd
 import requests
 
@@ -46,16 +47,11 @@ def _to_ep_year(values, timestamps, weights=None):
     return result
 
 
-def write_ep_txt(values, timestamps, filename, folder="variation_patterns", weights=None):
-    """Aggregate an hourly series and write an EnergyPLAN-ready txt file (8784 rows).
-
-    - Drops Feb 29 before averaging so leap years are handled cleanly.
-    - If the series spans multiple years, averages per hour-of-year
-      (consumption-weighted when *weights* are supplied).
-    - Appends the first 24 hours to reach 8784 rows.
-    - Writes comma decimal separator, 2 decimal places.
-    """
+def write_ep_txt(values, timestamps, filename, folder="variation_patterns", weights=None, EP_style=True):
     ep_vals = _to_ep_year(values, timestamps, weights)
+
+    if not EP_style:
+        ep_vals = ep_vals[:8760]
 
     n_nan = sum(1 for v in ep_vals if pd.isna(v))
     if n_nan:
@@ -65,8 +61,9 @@ def write_ep_txt(values, timestamps, filename, folder="variation_patterns", weig
     path = os.path.join(folder, filename)
     with open(path, "w") as fh:
         for val in ep_vals:
-            fh.write(f"{val:.2f}".replace(".", ",") + "\n")
-    print(f"Saved {len(ep_vals)}-row EnergyPLAN txt: {path}")
+            line = f"{val:.2f}".replace(".", ",") if EP_style else f"{val:.2f}"
+            fh.write(line + "\n")
+    print(f"Saved {len(ep_vals)}-row txt: {path}")
     return path
 
 
@@ -79,6 +76,11 @@ def fetch(url, params, cache=False, cache_dir="eds_cache"):
             return pd.read_parquet(path)
 
     r = requests.get(url, params=params, timeout=60)
+    if r.status_code == 429:
+        wait = int(r.headers.get("Retry-After", 60))
+        print(f"429 — waiting {wait}s (Retry-After) before retrying.")
+        time.sleep(wait)
+        r = requests.get(url, params=params, timeout=60)
     r.raise_for_status()
     df = pd.DataFrame(r.json().get("records", []))
 
